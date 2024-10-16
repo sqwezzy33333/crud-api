@@ -19,6 +19,11 @@ class Router {
             return this.sendErrorResponse(validatorError, response);
         }
 
+        switch (request.method) {
+            case 'POST':
+
+        }
+
         this.sendSuccessResponse(response);
     }
 

@@ -17,8 +17,10 @@ export const REQUEST_ERRORS = {
     BODY_INVALID_JSON: "Body is invalid JSON",
     BODY_NOT_OBJECT: "Body is not object",
     BODY_DONT_EXIST: "Body don't exist",
+    BODY_EXIST: "Body don't expected",
     BODY_UNEXPECTED_KEY: "Unexpected key: ",
     BODY_EXPECTED_KEY: "Expected key: ",
     BODY_INCORRECT_FIELD_VALUE: "Incorrect field value: ",
     BODY_INCORRECT_TYPE: "Incorrect field type: ",
+    USER_NOT_FOUND: "User not found",
 }

@@ -1,17 +1,23 @@
 import type {IncomingMessage} from "http";
 import {Validator} from "../validator";
 import {Validation} from "../abstract-validation/validation";
+import {REQUEST_ERRORS} from "../../constants/constants";
 
 export class GetValidation extends Validation {
-    constructor( request: IncomingMessage, validator: Validator) {
+    constructor(request: IncomingMessage, validator: Validator) {
         super(request, validator);
         this.validate();
     }
 
     validate() {
-        if(!this.uuid) {
-            return;
+        if (this.validator.getStringifyBody()) {
+            return this.setError({
+                message: REQUEST_ERRORS.BODY_EXIST,
+                code: 400
+            })
         }
-        this.isUuidValid(this.uuid);
+        if (this.uuid) {
+            this.isUuidValid(this.uuid);
+        }
     }
 }
