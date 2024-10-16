@@ -1,12 +1,12 @@
 import * as dotenv from 'dotenv'
-import {serverListener} from "./server-listener/server-listener";
+import {router} from "./router/router";
 import { createServer } from 'http';
 dotenv.config()
 
 
 export function startServer() {
     const PORT = process.env.PORT || 9000;
-    const server = createServer(serverListener.listen);
+    const server = createServer(router.listen);
 
     server.listen(PORT);
 }
