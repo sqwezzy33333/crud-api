@@ -1,41 +1,81 @@
 import {GetUser, PostPutUser} from "../models/models";
 import {v4 as uuidv4} from 'uuid';
+import fs from 'fs';
 
-class UserStorage {
-    private map: Map<string, PostPutUser> = new Map();
+export class UserStorage {
+    readonly DATABASE_PATH = './src/storage/database.json';
+    storage: GetUser[] = [];
 
-    isUser(userId: string): boolean {
-        return this.map.has(userId);
+    async isUser(userId: string): Promise<boolean> {
+        return this.storage.map(e => e.id).includes(userId);
     }
 
-    get uuids(): string[] {
-        return Object.keys(this.map);
+    getUuids(): string[] {
+        return this.storage.map(e => e.id);
     }
 
-    addUser(body: PostPutUser) {
+    async readDatabase() {
+        return new Promise<void>((resolve, reject) => {
+            let data = ''
+            const stream = fs.createReadStream(this.DATABASE_PATH);
+            stream.on('data', (chunk) => {
+                data += chunk.toString();
+            });
+            stream.on('end', () => {
+                if (data) {
+                    this.storage = JSON.parse(data);
+                }
+
+                resolve();
+            })
+        })
+    }
+
+    async updateDatabase() {
+        return new Promise<void>((resolve, reject) => {
+            const toString = JSON.stringify(this.storage);
+            fs.writeFile(this.DATABASE_PATH, toString, (err) => {
+                if (err) reject(err);
+                resolve();
+            })
+        })
+    }
+
+    async addUser(body: PostPutUser) {
+        await this.readDatabase();
         const id = this.generateUuid();
-        this.map.set(id, body);
+        const newUser: GetUser = {id, ...body};
+        this.storage.push(newUser);
+        return this.updateDatabase();
     }
 
-    deleteUser(userId: string) {
-        this.map.delete(userId);
+    async deleteUser(userId: string) {
+        await this.readDatabase();
+        const findIndex = this.storage.findIndex(e => e.id === userId);
+        this.storage.splice(findIndex, 1);
+        return this.updateDatabase();
     }
 
-    updateUser(userId: string, body: PostPutUser) {
-        this.map.set(userId, body);
+    async updateUser(userId: string, body: PostPutUser) {
+        await this.readDatabase();
+        const findIndex = this.storage.findIndex(e => e.id === userId);
+        this.storage[findIndex] = {...body, id: userId};
+        return this.updateDatabase();
     }
 
-    getUserByUuid(id: string): GetUser {
-        return {...this.map.get(id) as PostPutUser, id};
+    async getUserByUuid(id: string): Promise<GetUser> {
+        await this.readDatabase();
+        return this.storage.find((e) => e.id === id) as GetUser;
     }
 
-    getUsers(): GetUser[] {
-        return Array.from(this.map.entries()).map(([id, user]) => ({id, ...user}));
+    async getUsers(): Promise<GetUser[]> {
+        await this.readDatabase();
+        return this.storage;
     }
 
     generateUuid(): string {
         const newUuid = uuidv4();
-        if (this.uuids.includes(newUuid)) {
+        if (this.getUuids().includes(newUuid)) {
             return this.generateUuid();
         }
         return newUuid;

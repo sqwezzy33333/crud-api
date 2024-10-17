@@ -3,7 +3,9 @@ import cluster from 'cluster';
 import os from 'os';
 import type {IncomingMessage, ServerResponse} from "http";
 import * as http from "node:http";
-import * as process from "node:process";
+import {storage, UserStorage} from "../storage/storage";
+import {router} from "../router/router";
+import {PostPutUser} from "../models/models";
 
 class Balancer {
     private port = 9000;
@@ -11,14 +13,17 @@ class Balancer {
     private currentWorkerId = 0;
 
     initApp() {
-
+        process.setMaxListeners(0)
         this.numCPUs = os.cpus().length;
 
         if (cluster.isMaster) {
             console.log(`Master ${process.pid} is running`);
 
             for (let i = 0; i < this.numCPUs; i++) {
-               cluster.fork();
+                const worker = cluster.fork();
+                worker.on("message", (msg) => {
+                    worker.send(msg);
+                })
             }
             initServer(this.port, this.proxyRequest);
             cluster.on('exit', cluster.fork);

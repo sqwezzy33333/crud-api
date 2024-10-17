@@ -1,16 +1,13 @@
 import type {ServerResponse} from "http";
 import {getUuid} from "../utils/utils";
-import {GetUser} from "../models/models";
 import {storage} from "../storage/storage";
 
-export const getHandler = (response: ServerResponse, url: string) => {
+export const getHandler = async (response: ServerResponse, url: string) => {
     const uuid = getUuid(url);
-    let responseBody: null | GetUser | GetUser[] = null;
     response.statusCode = 200;
     if (uuid) {
-        responseBody = storage.getUserByUuid(uuid);
+        storage.getUserByUuid(uuid).then((user) => response.end(JSON.stringify(user)));
     } else {
-        responseBody = storage.getUsers();
+        storage.getUsers().then((users) => response.end(JSON.stringify(users)));
     }
-    response.end(JSON.stringify(responseBody));
 }

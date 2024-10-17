@@ -10,7 +10,7 @@ class Router {
         let body = '';
 
         request.on('data', (chunk) => body += chunk);
-        request.on('end', () => this.startValidation(request, response, body))
+        request.on('end', () => this.startValidation(request, response, body));
     }
 
     startValidation(request: IncomingMessage, response: ServerResponse, body: string) {
