@@ -3,6 +3,7 @@ import cluster from 'cluster';
 import os from 'os';
 import type {IncomingMessage, ServerResponse} from "http";
 import * as http from "node:http";
+import * as process from "node:process";
 
 class Balancer {
     private port = 9000;
@@ -17,20 +18,20 @@ class Balancer {
             console.log(`Master ${process.pid} is running`);
 
             for (let i = 0; i < this.numCPUs; i++) {
-                cluster.fork();
+               cluster.fork();
             }
             initServer(this.port, this.proxyRequest);
             cluster.on('exit', cluster.fork);
         } else {
             const port = this.port + cluster!.worker!.id;
-            initServer(port);
+            initServer(port)
         }
 
     }
 
     proxyRequest = (request: IncomingMessage, response: ServerResponse) => {
         this.currentWorkerId++;
-        if(this.currentWorkerId > this.numCPUs) {
+        if (this.currentWorkerId > this.numCPUs) {
             this.currentWorkerId = 0;
         }
         const workerPort = this.port + this.currentWorkerId;

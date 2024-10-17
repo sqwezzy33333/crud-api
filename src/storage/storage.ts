@@ -2,7 +2,7 @@ import {GetUser, PostPutUser} from "../models/models";
 import {v4 as uuidv4} from 'uuid';
 
 class UserStorage {
-    private readonly map: Map<string, PostPutUser> = new Map();
+    private map: Map<string, PostPutUser> = new Map();
 
     isUser(userId: string): boolean {
         return this.map.has(userId);

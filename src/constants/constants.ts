@@ -6,11 +6,9 @@ export const METHODS: Record<string, Method> = {
     put: 'PUT',
     delete: 'DELETE',
 }
-
 export const AVAILABLE_METHODS: string[] = ["DELETE", "GET", "PUT", "POST"];
-
 export const DEFAULT_PATH = '/api/users';
-
+export const UPDATE_STORAGE = 'UPDATE_STORAGE';
 export const REQUEST_ERRORS = {
     NOT_FOUND: "Path don't exist",
     UUID_INCORRECT: "Uuid is incorrect",
