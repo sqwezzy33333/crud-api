@@ -15,7 +15,6 @@ class UserStorage {
     addUser(body: PostPutUser) {
         const id = this.generateUuid();
         this.map.set(id, body);
-        console.log(this.map);
     }
 
     deleteUser(userId: string) {

@@ -1,6 +1,6 @@
 import type {IncomingMessage, ServerResponse} from 'http';
 import {Validator} from "../validator/validator";
-import {PostPutUser, ValidationRequestError} from "../models/models";
+import {ValidationRequestError} from "../models/models";
 import {METHODS} from "../constants/constants";
 import {deleteHandler, getHandler, postHandler, putHandler} from "../handlers";
 

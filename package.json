@@ -2,9 +2,9 @@
   "name": "crud-api",
   "version": "1.0.0",
   "scripts": {
-    "start:dev": "nodemon index.ts",
+    "start:dev": "nodemon src/index.ts --mode multi",
     "start:prod": "webpack --mode production && node ./dist/bundle.js",
-    "start:multi": "webpack --mode production && node ./dist/bundle.js"
+    "start:multi": "webpack --mode production && node ./dist/bundle.js --mode multi"
   },
   "keywords": [],
   "author": "",
