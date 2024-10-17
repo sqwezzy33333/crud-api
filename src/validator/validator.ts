@@ -78,6 +78,6 @@ export class Validator {
     }
     isMethodAvailable = () => AVAILABLE_METHODS.includes(this.request.method as string);
     includeDefaultPath = () => this.url.includes(DEFAULT_PATH);
-    validPathLength = () => this.url.split('/').length < 4;
+    validPathLength = () => this.url.split('/').length < 5;
     validAfterReplaceDefaultPath = () => this.url.replace(DEFAULT_PATH, '').startsWith('/') || !this.url.replace(DEFAULT_PATH, '');
 }

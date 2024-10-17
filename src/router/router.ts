@@ -24,7 +24,6 @@ class Router {
     }
 
     initHandlers(body: string, response: ServerResponse, request: IncomingMessage) {
-        response.statusCode = 200;
         response.setHeader('Content-Type', 'application/json');
         switch (request.method) {
             case METHODS.post: return postHandler(body, response)

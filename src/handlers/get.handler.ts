@@ -6,6 +6,7 @@ import {storage} from "../storage/storage";
 export const getHandler = (response: ServerResponse, url: string) => {
     const uuid = getUuid(url);
     let responseBody: null | GetUser | GetUser[] = null;
+    response.statusCode = 200;
     if (uuid) {
         responseBody = storage.getUserByUuid(uuid);
     } else {

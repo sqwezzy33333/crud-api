@@ -9,7 +9,7 @@ export const METHODS: Record<string, Method> = {
 
 export const AVAILABLE_METHODS: string[] = ["DELETE", "GET", "PUT", "POST"];
 
-export const DEFAULT_PATH = '/users';
+export const DEFAULT_PATH = '/api/users';
 
 export const REQUEST_ERRORS = {
     NOT_FOUND: "Path don't exist",
