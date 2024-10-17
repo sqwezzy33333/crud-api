@@ -7,4 +7,5 @@ export function initServer(port: number, listener = router.listen) {
     server.on('listening', () => {
         console.log(`Server listening on ${port}`)
     })
+    return server;
 }

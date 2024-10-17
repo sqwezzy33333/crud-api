@@ -47,7 +47,8 @@ export class UserStorage {
         const id = this.generateUuid();
         const newUser: GetUser = {id, ...body};
         this.storage.push(newUser);
-        return this.updateDatabase();
+        await this.updateDatabase();
+        return newUser;
     }
 
     async deleteUser(userId: string) {
@@ -60,8 +61,10 @@ export class UserStorage {
     async updateUser(userId: string, body: PostPutUser) {
         await this.readDatabase();
         const findIndex = this.storage.findIndex(e => e.id === userId);
-        this.storage[findIndex] = {...body, id: userId};
-        return this.updateDatabase();
+        const updatedUser = {...body, id: userId}
+        this.storage[findIndex] = updatedUser;
+        await this.updateDatabase();
+        return updatedUser;
     }
 
     async getUserByUuid(id: string): Promise<GetUser> {

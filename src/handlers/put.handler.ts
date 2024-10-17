@@ -7,5 +7,5 @@ export const putHandler = async (body: string, response: ServerResponse, url: st
     const bodyToParse = JSON.parse(body) as PostPutUser;
     const uuid = getUuid(url) as string;
     response.statusCode = 200;
-    storage.updateUser(uuid, bodyToParse).then(() => response.end());
+    storage.updateUser(uuid, bodyToParse).then((user) => response.end(JSON.stringify(user)));
 }
