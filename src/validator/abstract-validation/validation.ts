@@ -26,12 +26,12 @@ export class Validation {
         return true;
     }
 
-    isUserValidation(uuid: string) {
+    async isUserValidation(uuid: string) {
        if(this.validator.isInvalid) {
            return
        }
 
-       if(!storage.isUser(uuid)) {
+       if(!(await storage.isUser(uuid))) {
            return this.setError({
                message: REQUEST_ERRORS.USER_NOT_FOUND,
                code: 404,

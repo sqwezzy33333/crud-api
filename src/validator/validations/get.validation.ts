@@ -6,10 +6,9 @@ import {REQUEST_ERRORS} from "../../constants/constants";
 export class GetValidation extends Validation {
     constructor(request: IncomingMessage, validator: Validator) {
         super(request, validator);
-        this.validate();
     }
 
-    validate() {
+    async validate() {
         if (this.validator.getStringifyBody()) {
             return this.setError({
                 message: REQUEST_ERRORS.BODY_EXIST,
@@ -18,7 +17,7 @@ export class GetValidation extends Validation {
         }
         if (this.uuid) {
             this.isUuidValid(this.uuid);
-            this.isUserValidation(this.uuid);
+            await this.isUserValidation(this.uuid);
         }
     }
 }

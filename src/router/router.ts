@@ -13,14 +13,15 @@ class Router {
         request.on('end', () => this.startValidation(request, response, body));
     }
 
-    startValidation(request: IncomingMessage, response: ServerResponse, body: string) {
-        const validator = new Validator(request).setStringifyBody(body).validateRequest();
+    async startValidation(request: IncomingMessage, response: ServerResponse, body: string) {
+        const validator = new Validator(request).setStringifyBody(body);
+        await validator.validateRequest();
         const validatorError = validator.getValidationError();
 
         if (validatorError) {
             return this.sendErrorResponse(validatorError, response);
         }
-        this.initHandlers(body, response, request);
+        await this.initHandlers(body, response, request);
     }
 
     initHandlers(body: string, response: ServerResponse, request: IncomingMessage) {

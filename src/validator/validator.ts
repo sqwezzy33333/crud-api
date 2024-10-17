@@ -37,13 +37,12 @@ export class Validator {
         this.validationError = error;
     }
 
-    validateRequest() {
+    async validateRequest() {
         this.defaultPathValidator();
-        this.validateByRequestMethod();
-        return this;
+        return this.validateByRequestMethod();
     }
 
-    validateByRequestMethod() {
+    async validateByRequestMethod() {
         if (this.validationError) {
             return
         }
@@ -51,13 +50,13 @@ export class Validator {
 
         switch (method) {
             case METHODS.get :
-                return new GetValidation(this.request, this);
+                return new GetValidation(this.request, this).validate();
             case METHODS.post:
-                return new PostValidation(this.request, this);
+                return new PostValidation(this.request, this).validate();
             case METHODS.put:
-                return new PutValidation(this.request, this);
+                return new PutValidation(this.request, this).validate();
             case METHODS.delete:
-                return new DeleteValidation(this.request, this);
+                return new DeleteValidation(this.request, this).validate();
         }
     }
 

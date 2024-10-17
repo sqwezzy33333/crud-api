@@ -3,9 +3,6 @@ import cluster from 'cluster';
 import os from 'os';
 import type {IncomingMessage, ServerResponse} from "http";
 import * as http from "node:http";
-import {storage, UserStorage} from "../storage/storage";
-import {router} from "../router/router";
-import {PostPutUser} from "../models/models";
 
 class Balancer {
     private port = 9000;

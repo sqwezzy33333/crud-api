@@ -6,10 +6,9 @@ import {ValidationWitchBody} from "../abstract-validation/validation-with-body";
 export class PostValidation extends ValidationWitchBody {
     constructor(request: IncomingMessage, validator: Validator) {
         super(request, validator);
-        this.validate();
     }
 
-    validate() {
+    async validate() {
         if (this.uuid) {
             return this.setError({
                 message: REQUEST_ERRORS.UUID_EXIST,

@@ -7,6 +7,7 @@ export class UserStorage {
     storage: GetUser[] = [];
 
     async isUser(userId: string): Promise<boolean> {
+        await this.readDatabase();
         return this.storage.map(e => e.id).includes(userId);
     }
 
