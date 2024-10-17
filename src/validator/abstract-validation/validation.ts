@@ -1,9 +1,10 @@
 import type {IncomingMessage} from "http";
 import {validate as uuidValidate} from "uuid";
-import {DEFAULT_PATH, REQUEST_ERRORS} from "../../constants/constants";
-import {PostPutUser, ValidationRequestError} from "../../models/models";
 import {Validator} from "../validator";
-import {subtractArrays} from "../../utils/utils";
+import {getUuid} from "../../utils/utils";
+import {REQUEST_ERRORS} from "../../constants/constants";
+import {ValidationRequestError} from "../../models/models";
+import {storage} from "../../storage/storage";
 
 export class Validation {
     url = '';
@@ -25,6 +26,21 @@ export class Validation {
         return true;
     }
 
+    isUserValidation(uuid: string) {
+       if(this.validator.isInvalid) {
+           return
+       }
+
+       if(!storage.isUser(uuid)) {
+           return this.setError({
+               message: REQUEST_ERRORS.USER_NOT_FOUND,
+               code: 404,
+           });
+       }
+
+       return true;
+    }
+
     setUuidError(error = REQUEST_ERRORS.UUID_INCORRECT) {
         this.setError({
             message: error,
@@ -37,6 +53,6 @@ export class Validation {
     }
 
     get uuid(): string | null {
-        return this.url.replace(DEFAULT_PATH, '').split('/')[1] || null;
+        return getUuid(this.url);
     }
 }

@@ -1,6 +1,8 @@
 import type {IncomingMessage, ServerResponse} from 'http';
 import {Validator} from "../validator/validator";
-import {ValidationRequestError} from "../models/models";
+import {PostPutUser, ValidationRequestError} from "../models/models";
+import {METHODS} from "../constants/constants";
+import {deleteHandler, getHandler, postHandler, putHandler} from "../handlers";
 
 class Router {
 
@@ -18,19 +20,18 @@ class Router {
         if (validatorError) {
             return this.sendErrorResponse(validatorError, response);
         }
-
-        switch (request.method) {
-            case 'POST':
-
-        }
-
-        this.sendSuccessResponse(response);
+        this.initHandlers(body, response, request);
     }
 
-    sendSuccessResponse = (response: ServerResponse) => {
+    initHandlers(body: string, response: ServerResponse, request: IncomingMessage) {
         response.statusCode = 200;
         response.setHeader('Content-Type', 'application/json');
-        response.end('Success')
+        switch (request.method) {
+            case METHODS.post: return postHandler(body, response)
+            case METHODS.put: return putHandler(body, response, request.url as string)
+            case METHODS.delete: return deleteHandler(response, request.url as string)
+            case METHODS.get: return getHandler(response, request.url as string)
+        }
     }
 
     sendErrorResponse(error: ValidationRequestError, response: ServerResponse) {

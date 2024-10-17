@@ -1,11 +1,11 @@
-import {PostPutUser} from "../models/models";
+import {GetUser, PostPutUser} from "../models/models";
 import {v4 as uuidv4} from 'uuid';
 
 class UserStorage {
     private readonly map: Map<string, PostPutUser> = new Map();
 
     isUser(userId: string): boolean {
-        return !!this.map.get(userId);
+        return this.map.has(userId);
     }
 
     get uuids(): string[] {
@@ -15,6 +15,7 @@ class UserStorage {
     addUser(body: PostPutUser) {
         const id = this.generateUuid();
         this.map.set(id, body);
+        console.log(this.map);
     }
 
     deleteUser(userId: string) {
@@ -23,6 +24,14 @@ class UserStorage {
 
     updateUser(userId: string, body: PostPutUser) {
         this.map.set(userId, body);
+    }
+
+    getUserByUuid(id: string): GetUser {
+        return {...this.map.get(id) as PostPutUser, id};
+    }
+
+    getUsers(): GetUser[] {
+        return Array.from(this.map.entries()).map(([id, user]) => ({id, ...user}));
     }
 
     generateUuid(): string {

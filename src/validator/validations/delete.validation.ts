@@ -14,6 +14,7 @@ export class DeleteValidation extends Validation {
             return this.setUuidError(REQUEST_ERRORS.UUID_DONT_EXIST);
         }
         this.isUuidValid(this.uuid);
+        this.isUserValidation(this.uuid as string);
         if (this.validator.getStringifyBody()) {
             return this.setError({
                 message: REQUEST_ERRORS.BODY_EXIST,

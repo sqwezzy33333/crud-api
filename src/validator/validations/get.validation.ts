@@ -18,6 +18,7 @@ export class GetValidation extends Validation {
         }
         if (this.uuid) {
             this.isUuidValid(this.uuid);
+            this.isUserValidation(this.uuid);
         }
     }
 }

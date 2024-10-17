@@ -1,5 +1,5 @@
 import type {IncomingMessage} from "http";
-import {DEFAULT_PATH, REQUEST_ERRORS} from "../constants/constants";
+import {AVAILABLE_METHODS, DEFAULT_PATH, METHODS, REQUEST_ERRORS} from "../constants/constants";
 import {Method, ValidationRequestError} from "../models/models";
 import {DeleteValidation, GetValidation, PostValidation, PutValidation} from "./validations";
 
@@ -50,19 +50,24 @@ export class Validator {
         const method = this.request.method as Method;
 
         switch (method) {
-            case "GET": return new GetValidation(this.request, this);
-            case "POST": return new PostValidation(this.request, this);
-            case "PUT": return new PutValidation(this.request, this);
-            case "DELETE": return new DeleteValidation(this.request, this);
+            case METHODS.get :
+                return new GetValidation(this.request, this);
+            case METHODS.post:
+                return new PostValidation(this.request, this);
+            case METHODS.put:
+                return new PutValidation(this.request, this);
+            case METHODS.delete:
+                return new DeleteValidation(this.request, this);
         }
     }
 
     defaultPathValidator() {
-       if (
-           this.includeDefaultPath() &&
-           this.validPathLength() &&
-           this.validAfterReplaceDefaultPath()
-       ) {
+        if (
+            this.isMethodAvailable() &&
+            this.includeDefaultPath() &&
+            this.validPathLength() &&
+            this.validAfterReplaceDefaultPath()
+        ) {
             return;
         }
 
@@ -71,8 +76,8 @@ export class Validator {
             code: 404
         }
     }
-
+    isMethodAvailable = () => AVAILABLE_METHODS.includes(this.request.method as string);
     includeDefaultPath = () => this.url.includes(DEFAULT_PATH);
     validPathLength = () => this.url.split('/').length < 4;
-    validAfterReplaceDefaultPath = () => this.url.replace(DEFAULT_PATH, '').startsWith('/') || !this.url.replace(DEFAULT_PATH, '')
+    validAfterReplaceDefaultPath = () => this.url.replace(DEFAULT_PATH, '').startsWith('/') || !this.url.replace(DEFAULT_PATH, '');
 }

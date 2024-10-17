@@ -7,6 +7,8 @@ export const METHODS: Record<string, Method> = {
     delete: 'DELETE',
 }
 
+export const AVAILABLE_METHODS: string[] = ["DELETE", "GET", "PUT", "POST"];
+
 export const DEFAULT_PATH = '/users';
 
 export const REQUEST_ERRORS = {

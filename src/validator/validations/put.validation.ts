@@ -2,7 +2,6 @@ import type {IncomingMessage} from "http";
 import {Validator} from "../validator";
 import {REQUEST_ERRORS} from "../../constants/constants";
 import {ValidationWitchBody} from "../abstract-validation/validation-with-body";
-import {storage} from "../../storage/storage";
 
 export class PutValidation extends ValidationWitchBody {
     constructor(request: IncomingMessage, validator: Validator) {
@@ -24,14 +23,7 @@ export class PutValidation extends ValidationWitchBody {
                 code: 400,
             })
         }
-
-        if (!storage.isUser(this.uuid)) {
-            return this.setError({
-                message: REQUEST_ERRORS.USER_NOT_FOUND,
-                code: 404,
-            })
-        }
-
+        this.isUserValidation(this.uuid as string);
         this.validateJsonBody();
         this.validateBodyModel();
     }
