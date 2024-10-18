@@ -3,6 +3,8 @@ import cluster from 'cluster';
 import os from 'os';
 import type {IncomingMessage, ServerResponse} from "http";
 import * as http from "node:http";
+import {router} from "../router/router";
+import {Validator} from "../validator/validator";
 
 class Balancer {
     private port = 9000;
@@ -17,18 +19,21 @@ class Balancer {
             console.log(`Master ${process.pid} is running`);
 
             for (let i = 0; i < this.numCPUs; i++) {
-                const worker = cluster.fork();
-                worker.on("message", (msg) => {
-                    worker.send(msg);
-                })
+                cluster.fork();
             }
             initServer(this.port, this.proxyRequest);
             cluster.on('exit', cluster.fork);
+
+
         } else {
             const port = this.port + cluster!.worker!.id;
-            initServer(port)
-        }
+            initServer(port, (request: IncomingMessage, response: ServerResponse) => {
+                let body = '';
 
+                request.on('data', (chunk) => body += chunk);
+                request.on('end', () => router.initHandlers(body, response, request));
+            });
+        }
     }
 
     proxyRequest = (request: IncomingMessage, response: ServerResponse) => {
@@ -37,17 +42,30 @@ class Balancer {
             this.currentWorkerId = 0;
         }
         const workerPort = this.port + this.currentWorkerId;
-        const workerServer = http.request({
-            hostname: 'localhost',
-            port: workerPort,
-            path: request.url,
-            method: request.method,
-            headers: request.headers
-        }, (workerRes) => {
-            workerRes.pipe(response);
-        });
 
-        request.pipe(workerServer);
+        let body = '';
+
+        request.on('data', (chunk) => body += chunk);
+        request.on('end', async () => {
+            const validator = new Validator(request).setStringifyBody(body);
+            await validator.validateRequest();
+            const validatorError = validator.getValidationError();
+            if (validatorError) {
+                router.sendErrorResponse(validatorError, response);
+            } else {
+                const workerServer = http.request({
+                    hostname: 'localhost',
+                    port: workerPort,
+                    path: request.url,
+                    method: request.method,
+                    headers: request.headers,
+                }, (workerRes) => {
+                    workerRes.pipe(response);
+                });
+
+                request.pipe(workerServer);
+            }
+        });
     }
 
     setInitialPort(port: number) {

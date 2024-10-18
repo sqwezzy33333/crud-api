@@ -1,3 +1,5 @@
+import type {ServerResponse} from "http";
+
 export type Method = 'GET' | 'POST' | 'DELETE' | 'PUT';
 
 export interface ValidationRequestError {
@@ -15,4 +17,7 @@ export interface GetUser extends PostPutUser{
     id: string;
 }
 
-
+export interface ChildClusterMessage {
+    type: string;
+    error: ValidationRequestError,
+}
