@@ -108,7 +108,7 @@ describe('Errors', () => {
 })
 
 describe('Full CRUD', () => {
-    it('Should return error 404', async () => {
+    it('Should be without errors', async () => {
         const createResponse = await server.post(API).send(JSON.stringify(testUser));
         const id = createResponse.body['id'];
         expect(id).toBeTruthy();

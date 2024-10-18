@@ -40,7 +40,6 @@ class Router {
 
     sendErrorResponse(error: ValidationRequestError, response: ServerResponse) {
         response.writeHead(error.code, {'Content-Type': 'application/json'});
-        // @ts-ignore
         return response.end(error.message);
     }
 
