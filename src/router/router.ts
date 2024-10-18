@@ -39,7 +39,7 @@ class Router {
     }
 
     sendErrorResponse(error: ValidationRequestError, response: ServerResponse) {
-        response.writeHead(error.code, {'Content-Type': 'application/json'});
+        response.writeHead(error.code, {'Content-Type': 'text/plain'});
         return response.end(error.message);
     }
 

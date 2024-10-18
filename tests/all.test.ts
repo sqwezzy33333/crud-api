@@ -77,7 +77,6 @@ describe('Errors', () => {
 
     it('Should return 400, body dont exist', async () => {
         const response = await server.post(API).send();
-
         expect(response.statusCode).toBe(400);
         expect(response.text).toBe(REQUEST_ERRORS.BODY_DONT_EXIST);
     });
