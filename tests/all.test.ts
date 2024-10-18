@@ -9,9 +9,9 @@ const testUser = {
     hobbies: ["dota2", 'sport']
 }
 
-const server = supertest(initServer(9000));
-describe('All operation', () => {
 
+describe('All operation', () => {
+    const server = supertest(initServer(1000));
     it('Should return array of users', async () => {
         const response = await server.get(API);
 
@@ -55,6 +55,7 @@ describe('All operation', () => {
 })
 
 describe('Errors', () => {
+    const server = supertest(initServer(2000));
     it('Should return error 404', async () => {
         const response = await server.post(API + '/test/users').send(JSON.stringify(testUser));
 
@@ -107,6 +108,7 @@ describe('Errors', () => {
 })
 
 describe('Full CRUD', () => {
+    const server = supertest(initServer(3000));
     it('Should be without errors', async () => {
         const createResponse = await server.post(API).send(JSON.stringify(testUser));
         const id = createResponse.body['id'];

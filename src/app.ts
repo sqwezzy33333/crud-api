@@ -7,7 +7,7 @@ dotenv.config();
 
 export function startServerApplication() {
     const PORT_FROM_ENV = +process.env!.PORT! as number;
-    const PORT = PORT_FROM_ENV || 9000;
+    const PORT = PORT_FROM_ENV || 1000;
     const args = parseArgs();
     if(args.mode === "multi") {
       return balancer.setInitialPort(PORT).initApp();
