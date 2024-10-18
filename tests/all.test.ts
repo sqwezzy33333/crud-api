@@ -106,3 +106,33 @@ describe('Errors', () => {
         expect(response.text.includes(REQUEST_ERRORS.BODY_INCORRECT_FIELD_VALUE)).toBeTruthy();
     });
 })
+
+describe('Full CRUD', () => {
+    it('Should return error 404', async () => {
+        const createResponse = await server.post(API).send(JSON.stringify(testUser));
+        const id = createResponse.body['id'];
+        expect(id).toBeTruthy();
+        expect(createResponse.statusCode).toBe(201);
+
+        const getUsersResponse = await server.get(API).send();
+        expect(getUsersResponse.statusCode).toBe(200);
+        expect(getUsersResponse.body.length).toBeGreaterThan(0);
+
+        const getUserByIdResponse = await server.get(API+ '/' + id).send();
+        expect(getUserByIdResponse.statusCode).toBe(200);
+        expect(getUserByIdResponse.body.username).toBe(testUser.username);
+
+        const changedName = 'NAME_CHANGED';
+
+        const putResponse = await server.put(API + '/' + id).send({ ...testUser, username: changedName });
+        expect(putResponse.statusCode).toBe(200);
+        expect(putResponse.body.username).toBe(changedName);
+
+        const deleteResponse = await server.delete(API + '/' + id).send();
+        expect(deleteResponse.statusCode).toBe(200);
+
+        const checkUserResponse = await server.get(API + '/' + id).send();
+        expect(checkUserResponse.statusCode).toBe(404);
+        expect(checkUserResponse.text).toBe(REQUEST_ERRORS.USER_NOT_FOUND);
+    });
+})
