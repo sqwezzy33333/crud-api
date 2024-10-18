@@ -24,7 +24,6 @@ class Balancer {
             initServer(this.port, this.proxyRequest);
             cluster.on('exit', cluster.fork);
 
-
         } else {
             const port = this.port + cluster!.worker!.id;
             initServer(port, (request: IncomingMessage, response: ServerResponse) => {
