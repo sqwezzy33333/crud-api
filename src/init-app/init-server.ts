@@ -4,9 +4,7 @@ import {router} from "../router/router";
 export function initServer(port: number, listener = router.listen) {
     const server = createServer(listener);
     server.listen(port);
-    server.on('listening', () => {
-        console.log(`Server listening on ${port}`)
-    })
+    server.on('listening', () => console.log(`Server listening on ${port}`));
     server.on('error', () => initServer(port + 1000))
     return server;
 }
